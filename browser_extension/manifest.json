@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Button Demo Extension",
+  "version": "1.0",
+  "description": "Adds a button that appends text to the popup.",
+  "icons": {
+    "16":  "logo/logoipsum-383.png",
+    "32":  "logo/logoipsum-383.png",
+    "48":  "logo/logoipsum-383.png",
+    "128": "logo/logoipsum-383.png"
+  },
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
