@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Popup script loaded 2");
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
-                files: ['content.js']
+                files: ['script/content.js']
             });
 
             console.log("Popup script loaded 3");
