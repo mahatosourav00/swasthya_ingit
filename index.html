@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Swasthya Ingit Sathi</title>
     <link rel="stylesheet" href="styles/index.css">
-  </head>
-  <body>
-    <div id="output"></div>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Swasthya Ingit Sathi</h2>
+        <div class="form-group">
+            <label for="hubDropdown">HUB</label>
+            <select id="hubDropdown"></select>
+            <button id="fetchBtn">Fetch</button>
+        </div>
+        <table class="doctor-table" id="doctorTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be injected by JS -->
+            </tbody>
+        </table>
+        <div class="doctor-actions-row">
+            <button id="selectAllBtn" class="blue-btn">Select All</button>
+            <button id="selectNoneBtn" class="blue-btn">Deselect All</button>
+        </div>
+        <div class="doctor-actions-row">
+            <button id="startWatchingBtn" class="orange-btn">Start Watching</button>
+        </div>
+        <div id="resultDiv"></div>
+        <!-- Doctor table will be rendered here -->
+    </div>
+    <script src="scripts/data.js"></script>
     <script src="scripts/index.js"></script>
-  </body>
+</body>
+
 </html>
