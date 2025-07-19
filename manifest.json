@@ -1,16 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "Button Demo Extension",
+  "name": "Swasthya Ingit Sathi",
   "version": "1.0",
-  "description": "Adds a button that appends text to the popup.",
+  "description": "Utilities for Swasthya Ingit",
   "icons": {
     "16":  "logo/logoipsum-383.png",
     "32":  "logo/logoipsum-383.png",
     "48":  "logo/logoipsum-383.png",
     "128": "logo/logoipsum-383.png"
   },
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "windows"],
+  "background": {
+    "service_worker": "scripts/service.js"
+  },
   "action": {
-    "default_popup": "popup.html"
+    "default_title": "Swasthya Ingit Sathi"
   }
 }

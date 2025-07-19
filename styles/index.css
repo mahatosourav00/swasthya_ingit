@@ -1,0 +1,13 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 16px;
+    width: 500px;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+#output {
+    margin-top: 12px;
+    color: #333;
+    word-break: break-all;
+}
