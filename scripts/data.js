@@ -33,3 +33,10 @@ const hubs = {
     "UPHC PURULIA": ["1413569116521918"],
 }
 
+const status_dict = {
+    // "0": // unknown
+    "1": "Active",
+    // "2": // unknown
+    "3": "Busy",
+    "4": "Idle",
+}

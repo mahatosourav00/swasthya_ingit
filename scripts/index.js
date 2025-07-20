@@ -1,5 +1,11 @@
 // console.log("Popup script loaded");
 
+const reload_interval = 1000; // ms
+
+// Set CSS variable for reload interval
+const root = document.documentElement;
+root.style.setProperty('--reload-interval', reload_interval + 'ms');
+
 function getTabIdFromQuery() {
     const params = new URLSearchParams(window.location.search);
     return params.has('tabId') ? parseInt(params.get('tabId'), 10) : null;
@@ -69,6 +75,7 @@ function check_doctor_status(uid = "0141432593019719") {
         }
     }).then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        // console.log("check_doctor_status Response", r);
         return r.text();
     });
 }
@@ -107,9 +114,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const doctors = result.lstModel || [];
                 all_doctors = all_doctors.concat(doctors);
                 for (const doc of doctors) {
+                    let checked = '';
+                    if (doc.status && (doc.status.toLowerCase() === 'available' || doc.status.toLowerCase() === 'busy')) {
+                        checked = 'checked';
+                    }
                     const tr = document.createElement('tr');
                     tr.setAttribute('data-docid', doc.id);
-                    tr.innerHTML = `<td><input type='checkbox' checked class='row-checkbox'></td><td>Dr. ${doc.firstName} ${doc.middleName} ${doc.lastName}</td><td>---</td>`;
+                    tr.innerHTML = `<td><input type='checkbox' ${checked} class='row-checkbox'></td><td>Dr. ${doc.firstName} ${doc.middleName} ${doc.lastName}</td><td>---</td>`;
+                    // tr.innerHTML = `<td><input type='checkbox' ${checked} class='row-checkbox'></td><td>Dr. ${doc.firstName} ${doc.middleName} ${doc.lastName}</td><td>${doc.status}</td>`;
                     doctorTableBody.appendChild(tr);
                 }
             } catch (error) {
@@ -118,7 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         if (all_doctors.length === 0) {
-            resultDiv.innerHTML = 'No doctors found for the selected hub.';
+            resultDiv.innerHTML = `No doctors found... Possible reasons:
+            <ul>
+                <li>No doctors available in the selected hub.</li>
+                <li>You might not be properly logged in or your session might have expired.</li>
+            </ul>
+            `;
             return;
         } else {
             resultDiv.innerHTML = '';
@@ -151,8 +168,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    let watchingIntervals = [];
+    function stopAllWatching() {
+        watchingIntervals.forEach(id => clearInterval(id));
+        watchingIntervals = [];
+        startWatchingBtn.textContent = 'Start Watching';
+        startWatchingBtn.classList.remove('danger-bg');
+        startWatchingBtn.classList.add('success-bg');
+    }
+
     startWatchingBtn.addEventListener('click', () => {
-        // No action for now
+        if (watchingIntervals.length > 0) {
+            // Stop watching mode
+            stopAllWatching();
+            return;
+        }
+        // Start watching mode
+        startWatchingBtn.textContent = 'Stop Watching';
+        startWatchingBtn.classList.remove('success-bg');
+        startWatchingBtn.classList.add('danger-bg');
+        const intervalId = setInterval(async () => {
+            const doctorTableBody = document.querySelector('#doctorTable tbody');
+            const rows = doctorTableBody.querySelectorAll('tr');
+            for (const row of rows) {
+                const checkbox = row.querySelector('input.row-checkbox');
+                if (checkbox && checkbox.checked) {
+                    const docId = row.getAttribute('data-docid');
+                    try {
+                        const statusText = await executeInTab(tabId, check_doctor_status, [docId]);
+                        console.log("check_doctor_status Response", statusText);
+                        // Update status column (3rd td)
+                        const statusTd = row.querySelectorAll('td')[2];
+                        if (statusTd) {
+                            statusTd.textContent = status_dict[statusText] || statusText;
+                            statusTd.classList.remove('fade-status');
+                            // Force reflow to restart animation
+                            void statusTd.offsetWidth;
+                            statusTd.classList.add('fade-status');
+                        }
+                        // Example: if statusText is 'STOP', stop all intervals
+                        if (statusText === 'STOP') {
+                            stopAllWatching();
+                            return;
+                        }
+                    } catch (err) {
+                        const statusTd = row.querySelectorAll('td')[2];
+                        if (statusTd) statusTd.textContent = `Error: ${err.message || err}`;
+                        // Example: if error triggers stop
+                        if (err && err.message === 'STOP') {
+                            stopAllWatching();
+                            return;
+                        }
+                    }
+                }
+            }
+        }, reload_interval);
+        watchingIntervals.push(intervalId);
     });
 });
 

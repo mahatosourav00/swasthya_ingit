@@ -114,8 +114,10 @@ pre {
 
 .doctor-actions-row {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
     width: 100%;
-    gap: 8px;
     margin-top: 12px;
 }
 
@@ -184,4 +186,82 @@ pre {
 }
 .dark-bg:hover {
     background: #1d2124;
+}
+
+/* Tooltip for auto call label */
+.auto-call-label {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.auto-call-label .tooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 220px;
+    background: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 10;
+    left: 110%;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.2s;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.auto-call-label:hover .tooltip,
+.auto-call-label:focus-within .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Toggle switch styles for auto call */
+.switch-container {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+.switch-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    border-radius: 24px;
+    transition: background 0.2s;
+}
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+.switch-input:checked + .switch-slider {
+    background: #28a745;
+}
+.switch-input:checked + .switch-slider:before {
+    transform: translateX(20px);
+}
+
+.fade-status {
+    transition: opacity var(--reload-interval, 2000ms) linear;
+    opacity: 0.4;
 }
