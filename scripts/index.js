@@ -5,21 +5,6 @@ function getTabIdFromQuery() {
     return params.has('tabId') ? parseInt(params.get('tabId'), 10) : null;
 }
 
-// function getTokenFromTab(tabId) {
-//     const callback = token => globalToken = token;
-//     executeInTab(tabId, function() {
-//         try {
-//             return localStorage.getItem('userToken');
-//         } catch (e) {
-//             return null;
-//         }
-//     }, function(err, token) {
-//         callback && callback(token);
-//     });
-// }
-
-
-
 function executeInTab(tabId, fn, args = []) {
     return new Promise((resolve, reject) => {
         if (!tabId) return reject(new Error('Tab ID not provided'));
@@ -37,13 +22,10 @@ function executeInTab(tabId, fn, args = []) {
 }
 
 
-
-
-
-
 function get_status_info(location) {
     const token = localStorage.getItem('userToken');
     const cleanToken = token.replace(/^['"]+|['"]+$/g, '');
+    // console.log("Token:", cleanToken);
 
     if (!token) throw new Error('Token not found in localStorage');
 
@@ -58,8 +40,8 @@ function get_status_info(location) {
         specialityCode: "0"
     };
 
-    console.log("headers:", headers);
-    console.log("body:", body);
+    // console.log("headers:", headers);
+    // console.log("body:", body);
 
     return fetch("https://prod-api01.swasthyaingit.in/prod/aus/api/v1/PractitionerStatus/GetStatusInfoBySpeciality", {
         method: "POST",
@@ -70,8 +52,6 @@ function get_status_info(location) {
         return r.json();
     });
 }
-
-
 
 function check_doctor_status(uid = "0141432593019719") {
     const token = localStorage.getItem('userToken');
@@ -101,33 +81,12 @@ const tabId = getTabIdFromQuery();
 
 
 
-// document.addEventListener('DOMContentLoaded', async () => {
-//     try {
-//         const result = await executeInTab(tabId, get_status_info);
-//         output.innerHTML += `Output is:<pre>${JSON.stringify(result, null, 2)}</pre>`;
-//     } catch (error) {
-//         output.innerHTML += `Error: ${error.message || error}`;
-//     }
-//
-//     try {
-//         const doctorStatus = await executeInTab(tabId, check_doctor_status);
-//         if (doctorStatus !== undefined) {
-//             output.innerHTML += `<br><br>Doctor Status:<pre>${doctorStatus}</pre>`;
-//         }
-//     } catch (error) {
-//         output.innerHTML += `Error: ${error.message || error}`;
-//     }
-// });
-
-// Add hub dropdown and fetch button feature
-
-
 document.addEventListener('DOMContentLoaded', () => {
     // Populate dropdown from hubs
     const hubDropdown = document.getElementById('hubDropdown');
     for (const hub in hubs) {
         const option = document.createElement('option');
-        option.value = hubs[hub];
+        option.value = hub;
         option.textContent = hub;
         hubDropdown.appendChild(option);
     }
@@ -138,33 +97,60 @@ document.addEventListener('DOMContentLoaded', () => {
         const doctorTableBody = document.querySelector('#doctorTable tbody');
         doctorTableBody.innerHTML = '';
         resultDiv.innerHTML = 'Loading...';
-        const locationUid = hubDropdown.value;
-        try {
-            const result = await executeInTab(tabId, get_status_info, [locationUid]);
-            const doctors = result.lstModel || [];
-            console.log("Doctors:", doctors);
-            for (const doc of doctors) {
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-docid', doc.id);
-                tr.innerHTML = `<td><input type='checkbox' checked></td><td>Dr. ${doc.firstName} ${doc.lastName}</td><td>---</td>`;
-                doctorTableBody.appendChild(tr);
+        const locationUids = hubs[hubDropdown.value];
+
+        let all_doctors = [];
+        for (const locationUid of locationUids) {
+            try {
+                const result = await executeInTab(tabId, get_status_info, [locationUid]);
+                console.log("Result for locationUid", locationUid, result);
+                const doctors = result.lstModel || [];
+                all_doctors = all_doctors.concat(doctors);
+                for (const doc of doctors) {
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-docid', doc.id);
+                    tr.innerHTML = `<td><input type='checkbox' checked class='row-checkbox'></td><td>Dr. ${doc.firstName} ${doc.middleName} ${doc.lastName}</td><td>---</td>`;
+                    doctorTableBody.appendChild(tr);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message || error}`;
+                break;
             }
+        }
+        if (all_doctors.length === 0) {
+            resultDiv.innerHTML = 'No doctors found for the selected hub.';
+            return;
+        } else {
             resultDiv.innerHTML = '';
-        } catch (error) {
-            resultDiv.innerHTML = `Error: ${error.message || error}`;
+        }
+        // Reset select all checkbox
+        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        if (selectAllCheckbox) selectAllCheckbox.checked = true;
+    });
+
+    const startWatchingBtn = document.getElementById('startWatchingBtn');
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', (e) => {
+            const checked = e.target.checked;
+            document.querySelectorAll('#doctorTable tbody input.row-checkbox').forEach(cb => cb.checked = checked);
+        });
+    }
+
+    // Keep selectAllCheckbox in sync with row checkboxes
+    function syncSelectAllCheckbox() {
+        const rowCheckboxes = document.querySelectorAll('#doctorTable tbody input.row-checkbox');
+        const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
+        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        if (selectAllCheckbox) selectAllCheckbox.checked = allChecked;
+    }
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('row-checkbox')) {
+            syncSelectAllCheckbox();
         }
     });
 
-    const selectAllBtn = document.getElementById('selectAllBtn');
-    const selectNoneBtn = document.getElementById('selectNoneBtn');
-    const startWatchingBtn = document.getElementById('startWatchingBtn');
-
-    selectAllBtn.addEventListener('click', () => {
-        document.querySelectorAll('#doctorTable tbody input[type="checkbox"]').forEach(cb => cb.checked = true);
-    });
-    selectNoneBtn.addEventListener('click', () => {
-        document.querySelectorAll('#doctorTable tbody input[type="checkbox"]').forEach(cb => cb.checked = false);
-    });
     startWatchingBtn.addEventListener('click', () => {
         // No action for now
     });

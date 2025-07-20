@@ -45,15 +45,10 @@ button {
     padding: 7px 18px;
     border-radius: 6px;
     border: none;
-    background: #1976d2;
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
     font-weight: 500;
-    transition: background 0.2s;
-}
-button:hover {
-    background: #1565c0;
 }
 
 #resultDiv {
@@ -103,34 +98,19 @@ pre {
     transform: scale(1.2);
     margin-right: 4px;
 }
+.doctor-table th input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 0;
+    cursor: pointer;
+}
+.doctor-table input.row-checkbox {
+    transform: scale(1.2);
+    margin-right: 4px;
+    cursor: pointer;
+}
 .doctor-table td {
     vertical-align: middle;
 }
-
-.doctor-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-    justify-content: flex-end;
-}
-.doctor-actions button {
-    padding: 7px 18px;
-    border-radius: 6px;
-    border: none;
-    background: #1976d2;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-.doctor-actions button:hover {
-    background: #1565c0;
-}
-
-
-
-
 
 .doctor-actions-row {
     display: flex;
@@ -139,39 +119,7 @@ pre {
     margin-top: 12px;
 }
 
-
-
-.doctor-actions-row button {
-    flex: 1;
-}
-
-.doctor-actions-row:first-of-type button {
-    flex: 1;
-    /* flex: 1 1 50%;
-    margin-right: 8px; */
-}
-.doctor-actions-row:first-of-type button:last-child {
-    margin-right: 0;
-}
-.blue-btn {
-    background: #1976d2;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 10px 0;
-    width: 100%;
-    cursor: pointer;
-}
-.blue-btn:hover {
-    background: #1565c0;
-}
-
-
-.orange-btn {
-    background: #ff9800;
-    color: #fff;
+.action-btn {
     border: none;
     border-radius: 6px;
     font-size: 1rem;
@@ -181,6 +129,59 @@ pre {
     cursor: pointer;
     margin-top: 0;
 }
-.orange-btn:hover {
-    background: #f57c00;
+.primary-bg {
+    background: #007bff;
+    color: #fff;
+}
+.primary-bg:hover {
+    background: #0056b3;
+}
+.secondary-bg {
+    background: #6c757d;
+    color: #fff;
+}
+.secondary-bg:hover {
+    background: #545b62;
+}
+.success-bg {
+    background: #28a745;
+    color: #fff;
+}
+.success-bg:hover {
+    background: #218838;
+}
+.danger-bg {
+    background: #dc3545;
+    color: #fff;
+}
+.danger-bg:hover {
+    background: #bd2130;
+}
+.warning-bg {
+    background: #ffc107;
+    color: #212529;
+}
+.warning-bg:hover {
+    background: #e0a800;
+}
+.info-bg {
+    background: #17a2b8;
+    color: #fff;
+}
+.info-bg:hover {
+    background: #117a8b;
+}
+.light-bg {
+    background: #f8f9fa;
+    color: #212529;
+}
+.light-bg:hover {
+    background: #e2e6ea;
+}
+.dark-bg {
+    background: #343a40;
+    color: #fff;
+}
+.dark-bg:hover {
+    background: #1d2124;
 }
