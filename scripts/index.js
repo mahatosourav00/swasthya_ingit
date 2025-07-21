@@ -99,8 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const fetchBtn = document.getElementById('fetchBtn');
     const resultDiv = document.getElementById('resultDiv');
+    const showBusyActiveCheckbox = document.getElementById('showBusyActiveCheckbox');
 
     fetchBtn.addEventListener('click', async () => {
+        startWatchingBtn.disabled = true;
         const doctorTableBody = document.querySelector('#doctorTable tbody');
         doctorTableBody.innerHTML = '';
         resultDiv.innerHTML = 'Loading...';
@@ -114,18 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const doctors = result.lstModel || [];
                 all_doctors = all_doctors.concat(doctors);
                 for (const doc of doctors) {
-                    let checked = '';
-                    if (doc.status && (doc.status.toLowerCase() === 'available' || doc.status.toLowerCase() === 'busy')) {
-                        checked = 'checked';
+                    const doc_stats = await executeInTab(tabId, check_doctor_status, [doc.id]);
+                    const showBusyActive = showBusyActiveCheckbox.checked;
+                    const isBusyOrActive = doc_stats === '3' || doc_stats === '1';
+                    if (!showBusyActive || isBusyOrActive) {
+                        const tr = document.createElement('tr');
+                        tr.setAttribute('data-docid', doc.id);
+                        const checked = isBusyOrActive ? 'checked' : '';
+                        tr.innerHTML = `<td><input type='checkbox' ${checked} class='row-checkbox'></td><td>Dr. ${doc.firstName} ${doc.middleName} ${doc.lastName}</td><td>${status_dict[doc_stats] || doc_stats}</td>`;
+                        doctorTableBody.appendChild(tr);
                     }
-                    const tr = document.createElement('tr');
-                    tr.setAttribute('data-docid', doc.id);
-                    tr.innerHTML = `<td><input type='checkbox' ${checked} class='row-checkbox'></td><td>Dr. ${doc.firstName} ${doc.middleName} ${doc.lastName}</td><td>---</td>`;
-                    // tr.innerHTML = `<td><input type='checkbox' ${checked} class='row-checkbox'></td><td>Dr. ${doc.firstName} ${doc.middleName} ${doc.lastName}</td><td>${doc.status}</td>`;
-                    doctorTableBody.appendChild(tr);
                 }
             } catch (error) {
                 resultDiv.innerHTML = `Error: ${error.message || error}`;
+                startWatchingBtn.disabled = false;
                 break;
             }
         }
@@ -136,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <li>You might not be properly logged in or your session might have expired.</li>
             </ul>
             `;
+            startWatchingBtn.disabled = false;
             return;
         } else {
             resultDiv.innerHTML = '';
@@ -143,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Reset select all checkbox
         const selectAllCheckbox = document.getElementById('selectAllCheckbox');
         if (selectAllCheckbox) selectAllCheckbox.checked = true;
+        startWatchingBtn.disabled = false;
     });
 
     const startWatchingBtn = document.getElementById('startWatchingBtn');
@@ -178,12 +184,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     startWatchingBtn.addEventListener('click', () => {
+        const doctorTableBody = document.querySelector('#doctorTable tbody');
+        const rowCheckboxes = doctorTableBody.querySelectorAll('input.row-checkbox');
         if (watchingIntervals.length > 0) {
             // Stop watching mode
+            // Re-enable checkboxes and fetch button
+            rowCheckboxes.forEach(cb => cb.disabled = false);
+            if (selectAllCheckbox) selectAllCheckbox.disabled = false;
+            fetchBtn.disabled = false;
             stopAllWatching();
             return;
         }
         // Start watching mode
+        // Disable checkboxes and fetch button
+        rowCheckboxes.forEach(cb => cb.disabled = true);
+        if (selectAllCheckbox) selectAllCheckbox.disabled = true;
+        fetchBtn.disabled = true;
         startWatchingBtn.textContent = 'Stop Watching';
         startWatchingBtn.classList.remove('success-bg');
         startWatchingBtn.classList.add('danger-bg');
