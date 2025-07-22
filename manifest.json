@@ -4,10 +4,7 @@
   "version": "1.0",
   "description": "Utilities for Swasthya Ingit",
   "icons": {
-    "16":  "logo/logoipsum-383.png",
-    "32":  "logo/logoipsum-383.png",
-    "48":  "logo/logoipsum-383.png",
-    "128": "logo/logoipsum-383.png"
+    "64":  "logo/logo.png"
   },
   "permissions": ["activeTab", "scripting", "windows"],
   "background": {
