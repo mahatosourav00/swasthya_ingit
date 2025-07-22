@@ -1,7 +1,7 @@
 // console.log("Popup script loaded");
 
 const RELOAD_INTERVAL = 1000; // ms
-const HISTORY_LENGTH = 5;
+const HISTORY_LENGTH = 3;
 let all_doctors = {};
 const fetchBtn = document.getElementById("fetchBtn");
 const resultDiv = document.getElementById("resultDiv");
@@ -224,6 +224,13 @@ document.addEventListener("DOMContentLoaded", () => {
         startWatchingBtn.textContent = "Start Watching";
         startWatchingBtn.classList.remove("danger-bg");
         startWatchingBtn.classList.add("success-bg");
+
+        // Re-enable checkboxes and fetch button
+        const doctorTableBody = document.querySelector("#doctorTable tbody");
+        const rowCheckboxes = doctorTableBody.querySelectorAll("input.row-checkbox");
+        rowCheckboxes.forEach((cb) => (cb.disabled = false));
+        if (selectAllCheckbox) selectAllCheckbox.disabled = false;
+        fetchBtn.disabled = false;
     }
 
     startWatchingBtn.addEventListener("click", () => {
@@ -232,10 +239,6 @@ document.addEventListener("DOMContentLoaded", () => {
             doctorTableBody.querySelectorAll("input.row-checkbox");
         if (watchingIntervals.length > 0) {
             // Stop watching mode
-            // Re-enable checkboxes and fetch button
-            rowCheckboxes.forEach((cb) => (cb.disabled = false));
-            if (selectAllCheckbox) selectAllCheckbox.disabled = false;
-            fetchBtn.disabled = false;
             stopAllWatching();
             return;
         }
