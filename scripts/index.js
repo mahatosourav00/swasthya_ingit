@@ -1,7 +1,7 @@
 // console.log("Popup script loaded");
 
 const RELOAD_INTERVAL = 1000; // ms
-const HISTORY_LENGTH = 3;
+const HISTORY_LENGTH = 2;
 let all_doctors = {};
 const fetchBtn = document.getElementById("fetchBtn");
 const resultDiv = document.getElementById("resultDiv");
@@ -80,6 +80,25 @@ async function autoSelectDoctor(doc) {
     for (const opt of options) {
         console.log(`Checking option: '${opt.innerText}'`);
         if (opt.innerText.includes(fullName)) {
+            opt.click();
+            return true
+        }
+    }
+    return false;
+}
+
+async function clickOnCall() {
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    
+    await sleep(100);
+    const string_to_match = "Call";
+
+    document.querySelectorAll('button')
+
+    const options = document.querySelectorAll('button');
+    for (const opt of options) {
+        console.log(`Checking option: '${opt.innerText}'`);
+        if (opt.innerText.includes(string_to_match)) {
             opt.click();
             return true
         }
@@ -293,6 +312,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             const select_successful = await executeInTab(tabId, autoSelectDoctor, [doc]);
                             if (select_successful) {
                                 resultDiv.innerHTML += `Selected successfully.`;
+                                const call_successful = await executeInTab(tabId, clickOnCall);
+                                if (call_successful) {
+                                    resultDiv.innerHTML += ` Call button clicked successfully.`;
+                                }
                             } else {
                                 resultDiv.innerHTML += `Failed to select. Please select manually. Possible reason maybe relevant hub and specialty not selected manually hence the doctor could not be found in the dropdown.`;
                             }
