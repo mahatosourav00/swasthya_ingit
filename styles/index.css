@@ -10,7 +10,7 @@ body {
     margin: 32px auto;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     padding: 24px 20px 32px 20px;
 }
 
@@ -51,7 +51,8 @@ button {
     font-weight: 500;
 }
 
-button:disabled, .action-btn:disabled {
+button:disabled,
+.action-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none;
@@ -67,7 +68,7 @@ button:disabled, .action-btn:disabled {
     font-size: 0.98rem;
     min-height: 40px;
     word-break: break-word;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 pre {
@@ -84,37 +85,45 @@ pre {
     margin-top: 18px;
     background: #f1f8e9;
     border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     font-size: 0.98rem;
     overflow: hidden;
 }
-.doctor-table th, .doctor-table td {
+
+.doctor-table th,
+.doctor-table td {
     padding: 10px 8px;
     text-align: left;
     border-bottom: 1px solid #e0e0e0;
 }
+
 .doctor-table th {
     background: #dcedc8;
     color: #2a3a4b;
     font-weight: 600;
 }
+
 .doctor-table tr:last-child td {
     border-bottom: none;
 }
+
 .doctor-table input[type="checkbox"] {
     transform: scale(1.2);
     margin-right: 4px;
 }
+
 .doctor-table th input[type="checkbox"] {
     transform: scale(1.2);
     margin-right: 0;
     cursor: pointer;
 }
+
 .doctor-table input.row-checkbox {
     transform: scale(1.2);
     margin-right: 4px;
     cursor: pointer;
 }
+
 .doctor-table td {
     vertical-align: middle;
 }
@@ -138,59 +147,75 @@ pre {
     cursor: pointer;
     margin-top: 0;
 }
+
 .primary-bg {
     background: #007bff;
     color: #fff;
 }
+
 .primary-bg:hover {
     background: #0056b3;
 }
+
 .secondary-bg {
     background: #6c757d;
     color: #fff;
 }
+
 .secondary-bg:hover {
     background: #545b62;
 }
+
 .success-bg {
     background: #28a745;
     color: #fff;
 }
+
 .success-bg:hover {
     background: #218838;
 }
+
 .danger-bg {
     background: #dc3545;
     color: #fff;
 }
+
 .danger-bg:hover {
     background: #bd2130;
 }
+
 .warning-bg {
     background: #ffc107;
     color: #212529;
 }
+
 .warning-bg:hover {
     background: #e0a800;
 }
+
 .info-bg {
     background: #17a2b8;
     color: #fff;
 }
+
 .info-bg:hover {
     background: #117a8b;
 }
+
 .light-bg {
     background: #f8f9fa;
     color: #212529;
 }
+
 .light-bg:hover {
     background: #e2e6ea;
 }
+
 .dark-bg {
     background: #343a40;
     color: #fff;
 }
+
 .dark-bg:hover {
     background: #1d2124;
 }
@@ -202,6 +227,7 @@ pre {
     display: flex;
     align-items: center;
 }
+
 .auto-call-label .tooltip {
     visibility: hidden;
     opacity: 0;
@@ -218,8 +244,9 @@ pre {
     transform: translateY(-50%);
     transition: opacity 0.2s;
     font-size: 0.95rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
+
 .auto-call-label:hover .tooltip,
 .auto-call-label:focus-within .tooltip {
     visibility: visible;
@@ -233,11 +260,13 @@ pre {
     width: 44px;
     height: 24px;
 }
+
 .switch-input {
     opacity: 0;
     width: 0;
     height: 0;
 }
+
 .switch-slider {
     position: absolute;
     cursor: pointer;
@@ -249,6 +278,7 @@ pre {
     border-radius: 24px;
     transition: background 0.2s;
 }
+
 .switch-slider:before {
     position: absolute;
     content: "";
@@ -259,16 +289,60 @@ pre {
     background: #fff;
     border-radius: 50%;
     transition: transform 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
 }
-.switch-input:checked + .switch-slider {
+
+.switch-input:checked+.switch-slider {
     background: #28a745;
 }
-.switch-input:checked + .switch-slider:before {
+
+.switch-input:checked+.switch-slider:before {
     transform: translateX(20px);
+}
+
+.switch-input:disabled+.switch-slider {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.3);
+}
+
+.switch-input:disabled {
+    cursor: not-allowed;
 }
 
 .fade-status {
     transition: opacity var(--reload-interval, 2000ms) linear;
     opacity: 0.4;
+}
+
+.floating-reload-btn {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.1);
+    color: #28a745;
+    border: none;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    font-size: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-reload-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: #218838;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+.floating-reload-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
 }
